@@ -10,7 +10,19 @@ Python – Data extraction & automation
 SQLite – Data storage
 SQL – Data analysis
 Power BI – Dashboard visualization
-Excel – Data exploration & validation
+📊 Excel Report
+
+This project also generates an Excel report for quick analysis and sharing.
+
+Features:
+
+Structured crypto dataset
+Easy filtering & sorting
+Useful for business reporting
+
+File location:
+
+data/crypto_report.xlsx
 ⚙️ Project Architecture
 crypto-analytics-project/
 │
