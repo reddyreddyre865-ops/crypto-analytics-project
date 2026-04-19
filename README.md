@@ -21,4 +21,5 @@ processes it, stores it in SQLite, and generates insights.
 - Top 5 coins drive majority market cap
 
 ## Screenshots
-(Add Power BI images)
+
+![alt text](<Screenshot 2026-04-19 152631.png>) ![alt text](<Screenshot 2026-04-19 152656.png>) ![alt text](<Screenshot 2026-04-19 152713.png>) ![alt text](<Screenshot 2026-04-19 152728.png>) ![alt text](<Screenshot 2026-04-19 152742.png>) ![alt text](<Screenshot 2026-04-19 152753.png>)
