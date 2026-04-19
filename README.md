@@ -5,12 +5,15 @@ This project is an end-to-end data analytics pipeline that fetches real-time cry
 
 The goal of this project is to demonstrate data engineering + data analysis skills required for real-world data analyst roles.
 
+
 🧰 Tools & Technologies Used
 Python – Data extraction & automation
 SQLite – Data storage
 SQL – Data analysis
 Power BI – Dashboard visualization
 Excel – Data exploration & validation
+
+
 ⚙️ Project Architecture
 crypto-analytics-project/
 │
@@ -26,6 +29,8 @@ crypto-analytics-project/
 ├── dashboard/             # Power BI dashboard file
 ├── screenshots/           # Dashboard screenshots
 └── README.md
+
+
 🔄 Data Pipeline Workflow
 Data Extraction
 Fetches live cryptocurrency data from CoinGecko API
@@ -37,6 +42,8 @@ Stores structured data into SQLite database
 Automation
 Entire pipeline runs using Python scripts
 Can be scheduled for periodic execution
+
+
 📊 Key SQL Analysis
 🔹 Top Cryptocurrencies by Market Cap
 SELECT name, market_cap
