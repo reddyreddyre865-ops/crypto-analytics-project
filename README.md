@@ -11,7 +11,6 @@ SQLite – Data storage
 SQL – Data analysis
 Power BI – Dashboard visualization
 Excel – Data exploration & validation
-
 ⚙️ Project Architecture
 crypto-analytics-project/
 │
@@ -27,8 +26,6 @@ crypto-analytics-project/
 ├── dashboard/             # Power BI dashboard file
 ├── screenshots/           # Dashboard screenshots
 └── README.md
-
-
 🔄 Data Pipeline Workflow
 Data Extraction
 Fetches live cryptocurrency data from CoinGecko API
@@ -40,31 +37,25 @@ Stores structured data into SQLite database
 Automation
 Entire pipeline runs using Python scripts
 Can be scheduled for periodic execution
-
-
 📊 Key SQL Analysis
 🔹 Top Cryptocurrencies by Market Cap
 SELECT name, market_cap
 FROM crypto
 ORDER BY market_cap DESC
 LIMIT 10;
-
 🔹 Average Price of Cryptocurrencies
 SELECT AVG(current_price) FROM crypto;
-
 🔹 Bitcoin Market Dominance
 SELECT 
 (market_cap * 100.0 / (SELECT SUM(market_cap) FROM crypto)) AS btc_dominance
 FROM crypto
 WHERE name = 'Bitcoin';
-
 📈 Dashboard Features (Power BI)
 Market Cap Distribution
 Top 10 Cryptocurrencies
 Price Trends
 Volume Analysis
 BTC Dominance KPI
-
 💡 Business Insights
 Bitcoin dominance increased from 48% to 52%, indicating strong investor preference
 Top 5 cryptocurrencies contribute ~75–80% of total market capitalization
