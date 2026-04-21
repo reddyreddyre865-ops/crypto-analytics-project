@@ -125,11 +125,14 @@ else:
 import pandas as pd
 import sqlite3
 
+# Load raw data
 df = pd.read_csv("../data/raw_data.csv")
 
+# Clean data
 df.drop_duplicates(inplace=True)
 df.fillna(0, inplace=True)
 
+# Select useful columns
 df = df[[
     "name",
     "current_price",
@@ -137,13 +140,16 @@ df = df[[
     "price_change_percentage_24h"
 ]]
 
-df.to_csv("../data/processed_data.csv", index=False)
-
+# Connect to SQLite DB
 conn = sqlite3.connect("../data/crypto.db")
+
+# Create table
 df.to_sql("crypto_data", conn, if_exists="replace", index=False)
+
+conn.commit()
 conn.close()
 
-print("✅ Data processed and stored")
+print("✅ Data processed and stored in crypto.db")
 ```
 
 ---
