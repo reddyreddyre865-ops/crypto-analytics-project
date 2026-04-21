@@ -1,109 +1,270 @@
-📊 Crypto Analytics Project
-📌 Overview
+# 📊 Crypto Analytics Project
 
-This project is an end-to-end data analytics pipeline that fetches real-time cryptocurrency data from the CoinGecko API, processes it, stores it in a SQLite database, and generates actionable insights using SQL and Power BI.
+---
 
-The goal of this project is to demonstrate data engineering + data analysis skills required for real-world data analyst roles.
+## 📌 Overview
 
-🧰 Tools & Technologies Used
-Python – Data extraction & automation
-SQLite – Data storage
-SQL – Data analysis
-Power BI – Dashboard visualization
-📊 Excel Report
+This project is an **end-to-end data analytics pipeline** that fetches real-time cryptocurrency data from the CoinGecko API, processes it, stores it in a SQLite database, and generates actionable insights using SQL and dashboards.
 
-This project also generates an Excel report for quick analysis and sharing.
+The goal is to demonstrate **real-world Data Analyst + Data Engineering skills** including:
 
-Features:
+* API data extraction
+* Data cleaning & transformation
+* SQL-based analysis
+* Automation pipeline
+* Reporting
 
-Structured crypto dataset
-Easy filtering & sorting
-Useful for business reporting
+---
 
-File location:
+## 🧰 Tools & Technologies Used
 
-data/crypto_report.xlsx
-⚙️ Project Architecture
+* Python
+* Pandas
+* SQLite
+* SQL
+* Excel
+* Power BI
+* REST API (CoinGecko)
+* Git & GitHub
+
+---
+
+## ⚙️ Project Architecture
+
+```
 crypto-analytics-project/
 │
-├── data/                  # Raw & processed data
-├── scripts/               # Python scripts
-│   ├── fetch_data.py      # Fetch data from API
-│   ├── process_data.py    # Clean & transform data
-│   ├── automation.py      # Pipeline automation
+├── data/
+│   ├── raw_data.csv
+│   ├── processed_data.csv
+│   ├── crypto.db
+│   └── crypto_report.xlsx
+│
+├── scripts/
+│   ├── fetch_data.py
+│   ├── process_data.py
+│   └── automation.py
 │
 ├── sql/
-│   └── analysis.sql       # SQL queries for insights
+│   └── analysis.sql
 │
-├── dashboard/             # Power BI dashboard file
-├── screenshots/           # Dashboard screenshots
+├── dashboard/
+│   └── crypto_dashboard.pbix
+│
+├── screenshots/
+│   └── dashboard images
+│
 └── README.md
-🔄 Data Pipeline Workflow
-Data Extraction
-Fetches live cryptocurrency data from CoinGecko API
-Data Processing
-Cleans and formats data
-Handles missing/null values
-Data Storage
-Stores structured data into SQLite database
-Automation
-Entire pipeline runs using Python scripts
-Can be scheduled for periodic execution
-📊 Key SQL Analysis
-🔹 Top Cryptocurrencies by Market Cap
+```
+
+---
+
+## 🔄 Data Pipeline Workflow
+
+### 1️⃣ Data Extraction
+
+Fetches live cryptocurrency data from API
+
+### 2️⃣ Data Processing
+
+* Cleans missing values
+* Removes duplicates
+* Selects important columns
+
+### 3️⃣ Data Storage
+
+Stores processed data in SQLite database
+
+### 4️⃣ Automation
+
+Full pipeline runs automatically using Python scripts
+
+### 5️⃣ Reporting
+
+* Generates Excel report
+* Power BI dashboard for visualization
+
+---
+
+## 📥 Python Code
+
+### 🔹 fetch_data.py
+
+```python
+import requests
+import pandas as pd
+import os
+
+os.makedirs("../data", exist_ok=True)
+
+url = "https://api.coingecko.com/api/v3/coins/markets"
+
+params = {
+    "vs_currency": "usd",
+    "order": "market_cap_desc",
+    "per_page": 50,
+    "page": 1
+}
+
+response = requests.get(url, params=params)
+
+if response.status_code == 200:
+    data = response.json()
+    df = pd.DataFrame(data)
+    df.to_csv("../data/raw_data.csv", index=False)
+    print("✅ Data fetched successfully")
+else:
+    print("❌ API Error:", response.status_code)
+```
+
+---
+
+### 🔹 process_data.py
+
+```python
+import pandas as pd
+import sqlite3
+
+df = pd.read_csv("../data/raw_data.csv")
+
+df.drop_duplicates(inplace=True)
+df.fillna(0, inplace=True)
+
+df = df[[
+    "name",
+    "current_price",
+    "market_cap",
+    "price_change_percentage_24h"
+]]
+
+df.to_csv("../data/processed_data.csv", index=False)
+
+conn = sqlite3.connect("../data/crypto.db")
+df.to_sql("crypto_data", conn, if_exists="replace", index=False)
+conn.close()
+
+print("✅ Data processed and stored")
+```
+
+---
+
+### 🔹 automation.py
+
+```python
+import os
+import time
+
+print("Starting pipeline...")
+
+os.system("python scripts/fetch_data.py")
+time.sleep(2)
+
+os.system("python scripts/process_data.py")
+
+print("Pipeline completed successfully!")
+```
+
+---
+
+### 🔹 generate_report.py
+
+```python
+import sqlite3
+import pandas as pd
+
+conn = sqlite3.connect('../data/crypto.db')
+
+query = "SELECT * FROM crypto_data"
+df = pd.read_sql_query(query, conn)
+
+df.to_excel('../data/crypto_report.xlsx', index=False)
+
+print("Excel report generated successfully!")
+```
+
+---
+
+## 📊 SQL Analysis
+
+```sql
+-- Top 10 coins
 SELECT name, market_cap
-FROM crypto
+FROM crypto_data
 ORDER BY market_cap DESC
 LIMIT 10;
-🔹 Average Price of Cryptocurrencies
-SELECT AVG(current_price) FROM crypto;
-🔹 Bitcoin Market Dominance
-SELECT 
-(market_cap * 100.0 / (SELECT SUM(market_cap) FROM crypto)) AS btc_dominance
-FROM crypto
-WHERE name = 'Bitcoin';
-📈 Dashboard Features (Power BI)
-Market Cap Distribution
-Top 10 Cryptocurrencies
-Price Trends
-Volume Analysis
-BTC Dominance KPI
-💡 Business Insights
-Bitcoin dominance increased from 48% to 52%, indicating strong investor preference
-Top 5 cryptocurrencies contribute ~75–80% of total market capitalization
-High trading volume coins show stronger price stability
-Market trends indicate concentration around major assets
 
-## Screenshots
+-- Top gainers
+SELECT name, price_change_percentage_24h
+FROM crypto_data
+ORDER BY price_change_percentage_24h DESC
+LIMIT 5;
 
-![alt text](<Screenshot 2026-04-19 152631.png>) ![alt text](<Screenshot 2026-04-19 152656.png>) ![alt text](<Screenshot 2026-04-19 152713.png>) ![alt text](<Screenshot 2026-04-19 152728.png>) ![alt text](<Screenshot 2026-04-19 152742.png>) ![alt text][def]
+-- Top losers
+SELECT name, price_change_percentage_24h
+FROM crypto_data
+ORDER BY price_change_percentage_24h ASC
+LIMIT 5;
 
-[def]: <Screenshot 2026-04-19 152753.png>
+-- Average change
+SELECT AVG(price_change_percentage_24h) AS avg_change
+FROM crypto_data;
+```
 
-🚀 Key Highlights
+---
 
-✔ End-to-end data pipeline
+## 📈 Dashboard Features (Power BI)
+
+* Market Cap Distribution
+* Top 10 Cryptocurrencies
+* Price Trends
+* Volume Analysis
+* BTC Dominance KPI
+
+---
+
+## 💡 Business Insights
+
+* Top cryptocurrencies dominate majority of market cap
+* High market cap coins show more stability
+* Market trends indicate strong concentration in major assets
+
+---
+
+## 🚀 Key Highlights
+
+✔ End-to-end pipeline
 ✔ Real-time API integration
-✔ SQL-based analysis
+✔ SQL analytics
 ✔ Automated workflow
-✔ Interactive dashboard
+✔ Dashboard visualization
 
-📌 Future Improvements
-Add historical trend analysis
-Deploy dashboard online
-Use PostgreSQL instead of SQLite
-Add Airflow for scheduling
-👨‍💻 Author
+---
 
-Reddy Hima Kumar
+## 📌 Future Improvements
 
-📢 Conclusion
+* Add historical data tracking
+* Use PostgreSQL instead of SQLite
+* Deploy dashboard online
+* Schedule pipeline using Airflow
 
-This project demonstrates practical skills in:
+---
 
-Data extraction
-Data transformation
-SQL analysis
-Dashboard creation
+## 👨‍💻 Author
 
-It is designed to simulate a real-world data analyst workflow.
+**Reddy Hima Kumar**
+
+---
+
+## 📢 Conclusion
+
+This project demonstrates:
+
+* Data extraction from APIs
+* Data transformation
+* SQL-based insights
+* Dashboard reporting
+
+It simulates a **real-world Data Analyst workflow**.
+
+---
+
